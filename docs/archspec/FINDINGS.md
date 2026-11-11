@@ -29,17 +29,24 @@ drops to zero.
 the `[[exempt]]` entry. `archspec explain Ordering.API Ordering.Domain` shows the
 evidence chain.
 
-### F2 — Test projects participate as production units
+### F2 — Test projects are modeled inconsistently: MSTest ones as production, xunit ones absent
 
-All five `*.UnitTests` projects (`Application`, `Basket`, `ClientApp`,
-`Ordering`, `eShop.AppHost`) are classified `is_test = false` by the driver: eShop
-adopts `MSTest.Sdk` / Microsoft.Testing.Platform, which archspec's test detector
-does not recognize as test markers yet. Consequences:
+None of the nine test projects is classified as a test. The two shapes differ
+(archspec#39):
 
-- test-only edges are declared in `depend_on` like any other (the F1 cycle lands
-  in the production census), and
-- a test project adding an undeclared reference will fail `verify --strict` —
-  stricter than upstream default, kept deliberately.
+- the five `tests/*.UnitTests` projects (`Sdk="MSTest.Sdk"`) appear as **plain
+  production units** — the driver's C# test markers (`xunit`, `nunit`,
+  `Microsoft.NET.Test.Sdk`) miss the SDK-style `MSTest.Sdk` attribute, so their
+  edges land in the production `depend_on` contract — this is what produces the
+  F1 cycle in the production census; and
+- the four `tests/*.FunctionalTests` projects (`xunit.v3.mtp-v2` marker) are
+  **gated out of the model entirely** — no unit, no edges, no diagnostic line —
+  despite sitting in `eShop.slnx`.
+
+Consequence: a test project adding an undeclared reference fails
+`verify --strict` for the MSTest ones (stricter than upstream default, kept
+deliberately) while the FunctionalTests ones could drift silently until the
+marker gap is fixed upstream.
 
 ### F3 — Exact-set dependency contract (strict by design)
 
