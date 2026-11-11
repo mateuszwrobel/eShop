@@ -1,0 +1,155 @@
+# eShop architecture specification — archspec (https://github.com/mateuszwrobel/archspec)
+# Run the instrumented audit with ./build/archspec/audit.sh
+# Reference: archspec help spec | archspec help languages | archspec help diagnostics
+
+[project]
+language = "csharp"
+# The tree is the .NET solution; the handful of TS/JS files are test runners
+# and static assets with no place in the architecture. Declared so the
+# language-consreement check judges the tree as pure csharp.
+excluded_sources = [
+  { path = "e2e", reason = "Playwright end-to-end specs (TypeScript)" },
+  { path = "playwright.config.ts", reason = "Playwright runner config (TypeScript)" },
+  { path = "src/Identity.API/wwwroot", reason = "IdentityServer static assets (JavaScript)" },
+  { path = "src/WebApp/Components/Chatbot/Chatbot.razor.js", reason = "Blazor JS interop asset" },
+  { path = "src/WebApp/wwwroot", reason = "WebApp static assets (JavaScript)" },
+]
+
+
+[[module]]
+name = "Basket.API"
+matches = { units = ["Basket.API"], modules = ["eShop::Basket"] }
+allowed = { depend_on = ["EventBus", "EventBusRabbitMQ", "eShop.ServiceDefaults"] }
+
+[[module]]
+name = "Catalog.API"
+matches = { units = ["Catalog.API"], modules = ["Catalog::API", "eShop::Catalog"] }
+allowed = { depend_on = ["EventBus", "EventBusRabbitMQ", "IntegrationEventLogEF", "eShop.ServiceDefaults"] }
+
+[[module]]
+name = "Identity.API"
+matches = { units = ["Identity.API"], modules = ["Identity::API", "eShop::Identity", "IdentityServerHost::Quickstart"] }
+allowed = { depend_on = ["eShop.ServiceDefaults"] }
+
+[[module]]
+name = "Ordering.API"
+matches = { units = ["Ordering.API"], modules = ["eShop::Ordering::API"] }
+allowed = { depend_on = ["EventBus", "EventBusRabbitMQ", "IntegrationEventLogEF", "Ordering.Domain", "Ordering.Infrastructure", "eShop.ServiceDefaults"] }
+
+[[module]]
+name = "WebApp"
+matches = { units = ["WebApp"], modules = ["eShop::WebApp"] }
+allowed = { depend_on = ["EventBus", "EventBusRabbitMQ", "WebAppComponents", "eShop.ServiceDefaults"] }
+
+[[module]]
+name = "HybridApp"
+matches = { units = ["HybridApp"], modules = ["eShop::HybridApp"] }
+allowed = { depend_on = ["WebAppComponents"] }
+
+[[module]]
+name = "ClientApp"
+matches = { units = ["ClientApp"], modules = ["eShop::ClientApp"] }
+
+[[module]]
+name = "Webhooks.API"
+matches = { units = ["Webhooks.API"], modules = ["Webhooks::API"] }
+allowed = { depend_on = ["EventBus", "EventBusRabbitMQ", "IntegrationEventLogEF", "eShop.ServiceDefaults"] }
+
+[[module]]
+name = "WebAppComponents"
+matches = { units = ["WebAppComponents"], modules = ["eShop::WebAppComponents"] }
+
+[[module]]
+name = "WebhookClient"
+matches = { units = ["WebhookClient"], modules = ["eShop::WebhookClient"] }
+allowed = { depend_on = ["eShop.ServiceDefaults"] }
+
+[[module]]
+name = "OrderProcessor"
+matches = { units = ["OrderProcessor"], modules = ["eShop::OrderProcessor"] }
+allowed = { depend_on = ["EventBus", "EventBusRabbitMQ", "eShop.ServiceDefaults"] }
+
+[[module]]
+name = "PaymentProcessor"
+matches = { units = ["PaymentProcessor"], modules = ["eShop::PaymentProcessor"] }
+allowed = { depend_on = ["EventBusRabbitMQ", "eShop.ServiceDefaults"] }
+
+[[module]]
+name = "Ordering.Domain"
+matches = { units = ["Ordering.Domain"], modules = ["eShop::Ordering::Domain", "eShop::Ordering"] }
+allowed = { depend_on = ["Ordering.API", "Ordering.Infrastructure"] }
+
+[[module]]
+name = "Ordering.Infrastructure"
+matches = { units = ["Ordering.Infrastructure"], modules = ["Ordering::Infrastructure", "eShop::Ordering::Infrastructure"] }
+allowed = { depend_on = ["IntegrationEventLogEF", "Ordering.Domain"] }
+
+[[module]]
+name = "EventBus"
+matches = { units = ["EventBus"], modules = ["eShop::EventBus"] }
+
+[[module]]
+name = "EventBusRabbitMQ"
+matches = { units = ["EventBusRabbitMQ"], modules = ["eShop::EventBusRabbitMQ", "Microsoft::Extensions::Hosting"] }
+allowed = { depend_on = ["EventBus", "wiring::microsoft"] }
+
+[[module]]
+name = "IntegrationEventLogEF"
+matches = { units = ["IntegrationEventLogEF"], modules = ["eShop::IntegrationEventLogEF"] }
+allowed = { depend_on = ["EventBus"] }
+
+[[module]]
+name = "eShop.ServiceDefaults"
+matches = { units = ["eShop.ServiceDefaults"], modules = ["eShop::ServiceDefaults", "Microsoft::Extensions::Configuration"] }
+
+[[module]]
+name = "eShop.AppHost"
+matches = { units = ["eShop.AppHost"], modules = ["eShop::AppHost"] }
+
+[[module]]
+name = "Application.UnitTests"
+matches = { units = ["Application.UnitTests"], modules = ["eShop::Application"] }
+allowed = { depend_on = ["Catalog.API", "EventBus", "Identity.API", "OrderProcessor", "PaymentProcessor", "WebhookClient", "Webhooks.API", "eShop.ServiceDefaults", "wiring::microsoft"] }
+
+[[module]]
+name = "Basket.UnitTests"
+matches = { units = ["Basket.UnitTests"], modules = ["eShop::Basket::UnitTests"] }
+allowed = { depend_on = ["Basket.API"] }
+
+[[module]]
+name = "ClientApp.UnitTests"
+matches = { units = ["ClientApp.UnitTests"], modules = ["ClientApp::UnitTests"] }
+allowed = { depend_on = ["ClientApp"] }
+
+[[module]]
+name = "Ordering.UnitTests"
+matches = { units = ["Ordering.UnitTests"], modules = ["eShop::Ordering::UnitTests"] }
+allowed = { depend_on = ["Ordering.API", "Ordering.Domain", "Ordering.Infrastructure"] }
+
+[[module]]
+name = "eShop.AppHost.UnitTests"
+matches = { units = ["eShop.AppHost.UnitTests"], modules = ["eShop::AppHost::UnitTests"] }
+allowed = { depend_on = ["eShop.AppHost"] }
+
+[[module]]
+name = "ArchspecTools"
+matches = { units = ["ArchspecTools"] }
+
+[[module]]
+name = "wiring::microsoft"
+matches = { modules = ["Microsoft::Extensions::DependencyInjection"] }
+allowed = { depend_on = ["EventBus"] }
+
+[[module]]
+name = "wiring::root"
+matches = { modules = ["eShop"] }
+allowed = { depend_on = ["EventBus", "OrderProcessor", "PaymentProcessor", "eShop.ServiceDefaults", "wiring::microsoft"] }
+
+[[constraint]]
+type = "no_cycles"
+
+# Cycle ratchet ledger — debt entries, see 'archspec help diagnostics'.
+[[exempt]]
+cycle = "Ordering.API -> Ordering.Domain -> Ordering.API"
+tier = "module"
+reason = "Ordering.UnitTests helper files declare the bare namespace eShop.Ordering and import Ordering.API; re-home them under eShop.Ordering.UnitTests and delete this entry"
