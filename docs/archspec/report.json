@@ -1,0 +1,36 @@
+{
+  "language": "csharp",
+  "environment": {
+    "state": "built",
+    "header": "adjudicated against BUILT tree"
+  },
+  "metrics": {
+    "components": 27,
+    "units": 25,
+    "edges_internal": 51,
+    "edges_external": 72,
+    "cycles": 1,
+    "violations_components": 0,
+    "violations_edges": 0,
+    "violations_undeclared_dependency": 0,
+    "violations_boundary_violation": 0,
+    "violations_contracts": 0,
+    "violations_cycles": 0,
+    "exempt_cycles": 1
+  },
+  "roles": {
+    "Catalog::API": "composition",
+    "Identity::API": "composition",
+    "Ordering::Infrastructure": "facade",
+    "Webhooks::API": "composition",
+    "eShop::Application": "composition",
+    "eShop::ClientApp": "composition",
+    "eShop::EventBus": "facade",
+    "eShop::HybridApp": "composition",
+    "eShop::Ordering": "facade",
+    "eShop::Ordering::API": "composition",
+    "eShop::WebApp": "composition",
+    "eShop::WebhookClient": "composition"
+  },
+  "findings": []
+}

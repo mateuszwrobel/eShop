@@ -1,0 +1,58 @@
+name: architecture
+
+# archspec audit: verifies the C# architecture against architecture.spec.toml
+# and gates that the committed diagrams and model artefacts match the tree
+# (all --check variants) — then posts per-command timings in the job summary.
+# Regenerate the artefacts locally with `./build/archspec/audit.sh` and commit.
+
+on:
+  pull_request:
+    paths-ignore:
+      - '**.md'
+      - '.github/workflows/markdownlint.yml'
+      - '.github/workflows/playwright.yml'
+      - '.github/workflows/pr-validation*.yml'
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+      - '.github/workflows/markdownlint.yml'
+      - '.github/workflows/playwright.yml'
+      - '.github/workflows/pr-validation*.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  archspec-audit:
+    name: archspec audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      DOTNET_NOLOGO: true
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+      ARCHSPEC_RUNS: 3
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET (global.json)
+        uses: actions/setup-dotnet@v4
+
+      - name: Restore archspec tools package
+        run: dotnet restore tools/archspec/ArchspecTools.csproj
+
+      # Timed audit: `verify --strict` gate + artefact freshness gates
+      # (scan/diagram/inspect/report/depgraph --check). Timing table lands
+      # in docs/archspec/performance.md (this run only) and the job summary.
+      - name: Architecture audit (timed, gates)
+        run: ./build/archspec/audit.sh --check
+
+      - name: Upload audit artefacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: archspec-audit
+          path: docs/archspec/
+          retention-days: 14

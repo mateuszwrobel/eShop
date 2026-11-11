@@ -1,0 +1,85 @@
+graph TD
+  Application_UnitTests_311fa19a["Application.UnitTests"]
+  ArchspecTools
+  Basket_API_d3aca517["Basket.API"]
+  Basket_UnitTests_a996426e["Basket.UnitTests"]
+  Catalog_API_56d0f14a["Catalog.API"]
+  ClientApp
+  ClientApp_UnitTests_c17ac9a0["ClientApp.UnitTests"]
+  EventBus
+  EventBusRabbitMQ
+  HybridApp
+  Identity_API_3cb8d9c5["Identity.API"]
+  IntegrationEventLogEF
+  OrderProcessor
+  Ordering_API_5d46e9ea["Ordering.API"]
+  Ordering_Domain_e33b2e53["Ordering.Domain"]
+  Ordering_Infrastructure_b20af8a5["Ordering.Infrastructure"]
+  Ordering_UnitTests_44d43508["Ordering.UnitTests"]
+  PaymentProcessor
+  WebApp
+  WebAppComponents
+  WebhookClient
+  Webhooks_API_d533aa81["Webhooks.API"]
+  eShop_AppHost_3b1d3b4b["eShop.AppHost"]
+  eShop_AppHost_UnitTests_ff9b188c["eShop.AppHost.UnitTests"]
+  eShop_ServiceDefaults_ae22c916["eShop.ServiceDefaults"]
+  wiring__microsoft_3946672b["wiring::microsoft"]
+  wiring__root_9179b10d["wiring::root"]
+  Application_UnitTests_311fa19a --> Catalog_API_56d0f14a
+  Application_UnitTests_311fa19a --> EventBus
+  Application_UnitTests_311fa19a --> Identity_API_3cb8d9c5
+  Application_UnitTests_311fa19a --> OrderProcessor
+  Application_UnitTests_311fa19a --> PaymentProcessor
+  Application_UnitTests_311fa19a --> WebhookClient
+  Application_UnitTests_311fa19a --> Webhooks_API_d533aa81
+  Application_UnitTests_311fa19a --> eShop_ServiceDefaults_ae22c916
+  Application_UnitTests_311fa19a --> wiring__microsoft_3946672b
+  Basket_API_d3aca517 --> EventBus
+  Basket_API_d3aca517 --> EventBusRabbitMQ
+  Basket_API_d3aca517 --> eShop_ServiceDefaults_ae22c916
+  Basket_UnitTests_a996426e --> Basket_API_d3aca517
+  Catalog_API_56d0f14a --> EventBus
+  Catalog_API_56d0f14a --> EventBusRabbitMQ
+  Catalog_API_56d0f14a --> IntegrationEventLogEF
+  Catalog_API_56d0f14a --> eShop_ServiceDefaults_ae22c916
+  ClientApp_UnitTests_c17ac9a0 --> ClientApp
+  EventBusRabbitMQ --> EventBus
+  EventBusRabbitMQ --> wiring__microsoft_3946672b
+  HybridApp --> WebAppComponents
+  Identity_API_3cb8d9c5 --> eShop_ServiceDefaults_ae22c916
+  IntegrationEventLogEF --> EventBus
+  OrderProcessor --> EventBus
+  OrderProcessor --> EventBusRabbitMQ
+  OrderProcessor --> eShop_ServiceDefaults_ae22c916
+  Ordering_API_5d46e9ea --> EventBus
+  Ordering_API_5d46e9ea --> EventBusRabbitMQ
+  Ordering_API_5d46e9ea --> IntegrationEventLogEF
+  Ordering_API_5d46e9ea --> Ordering_Domain_e33b2e53
+  Ordering_API_5d46e9ea --> Ordering_Infrastructure_b20af8a5
+  Ordering_API_5d46e9ea --> eShop_ServiceDefaults_ae22c916
+  Ordering_Domain_e33b2e53 --> Ordering_API_5d46e9ea
+  Ordering_Domain_e33b2e53 --> Ordering_Infrastructure_b20af8a5
+  Ordering_Infrastructure_b20af8a5 --> IntegrationEventLogEF
+  Ordering_Infrastructure_b20af8a5 --> Ordering_Domain_e33b2e53
+  Ordering_UnitTests_44d43508 --> Ordering_API_5d46e9ea
+  Ordering_UnitTests_44d43508 --> Ordering_Domain_e33b2e53
+  Ordering_UnitTests_44d43508 --> Ordering_Infrastructure_b20af8a5
+  PaymentProcessor --> EventBusRabbitMQ
+  PaymentProcessor --> eShop_ServiceDefaults_ae22c916
+  WebApp --> EventBus
+  WebApp --> EventBusRabbitMQ
+  WebApp --> WebAppComponents
+  WebApp --> eShop_ServiceDefaults_ae22c916
+  WebhookClient --> eShop_ServiceDefaults_ae22c916
+  Webhooks_API_d533aa81 --> EventBus
+  Webhooks_API_d533aa81 --> EventBusRabbitMQ
+  Webhooks_API_d533aa81 --> IntegrationEventLogEF
+  Webhooks_API_d533aa81 --> eShop_ServiceDefaults_ae22c916
+  eShop_AppHost_UnitTests_ff9b188c --> eShop_AppHost_3b1d3b4b
+  wiring__microsoft_3946672b --> EventBus
+  wiring__root_9179b10d --> EventBus
+  wiring__root_9179b10d --> OrderProcessor
+  wiring__root_9179b10d --> PaymentProcessor
+  wiring__root_9179b10d --> eShop_ServiceDefaults_ae22c916
+  wiring__root_9179b10d --> wiring__microsoft_3946672b

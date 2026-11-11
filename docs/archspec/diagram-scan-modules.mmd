@@ -1,0 +1,215 @@
+graph TD
+  subgraph project
+    Application_UnitTests_311fa19a["Application.UnitTests"]
+    ArchspecTools
+    Basket_API_d3aca517["Basket.API"]
+    Basket_UnitTests_a996426e["Basket.UnitTests"]
+    Catalog_API_56d0f14a["Catalog.API [composition]"]
+    ClientApp
+    ClientApp_UnitTests_c17ac9a0["ClientApp.UnitTests"]
+    EventBus
+    EventBusRabbitMQ
+    HybridApp
+    Identity_API_3cb8d9c5["Identity.API [composition]"]
+    IntegrationEventLogEF
+    OrderProcessor
+    Ordering_API_5d46e9ea["Ordering.API"]
+    Ordering_Domain_e33b2e53["Ordering.Domain"]
+    Ordering_Infrastructure_b20af8a5["Ordering.Infrastructure [facade]"]
+    Ordering_UnitTests_44d43508["Ordering.UnitTests"]
+    PaymentProcessor
+    WebApp
+    WebAppComponents
+    WebhookClient
+    Webhooks_API_d533aa81["Webhooks.API [composition]"]
+    eShop_AppHost_3b1d3b4b["eShop.AppHost"]
+    eShop_AppHost_UnitTests_ff9b188c["eShop.AppHost.UnitTests"]
+    eShop_ServiceDefaults_ae22c916["eShop.ServiceDefaults"]
+    Application_UnitTests_311fa19a --> Catalog_API_56d0f14a
+    Application_UnitTests_311fa19a --> Identity_API_3cb8d9c5
+    Application_UnitTests_311fa19a --> OrderProcessor
+    Application_UnitTests_311fa19a --> PaymentProcessor
+    Application_UnitTests_311fa19a --> WebhookClient
+    Application_UnitTests_311fa19a --> Webhooks_API_d533aa81
+    Basket_API_d3aca517 --> EventBusRabbitMQ
+    Basket_API_d3aca517 --> eShop_ServiceDefaults_ae22c916
+    Basket_UnitTests_a996426e --> Basket_API_d3aca517
+    Catalog_API_56d0f14a --> EventBusRabbitMQ
+    Catalog_API_56d0f14a --> IntegrationEventLogEF
+    Catalog_API_56d0f14a --> eShop_ServiceDefaults_ae22c916
+    ClientApp_UnitTests_c17ac9a0 --> ClientApp
+    EventBusRabbitMQ --> EventBus
+    HybridApp --> WebAppComponents
+    Identity_API_3cb8d9c5 --> eShop_ServiceDefaults_ae22c916
+    IntegrationEventLogEF --> EventBus
+    OrderProcessor --> EventBusRabbitMQ
+    OrderProcessor --> eShop_ServiceDefaults_ae22c916
+    Ordering_API_5d46e9ea --> EventBusRabbitMQ
+    Ordering_API_5d46e9ea --> IntegrationEventLogEF
+    Ordering_API_5d46e9ea --> Ordering_Domain_e33b2e53
+    Ordering_API_5d46e9ea --> Ordering_Infrastructure_b20af8a5
+    Ordering_API_5d46e9ea --> eShop_ServiceDefaults_ae22c916
+    Ordering_Infrastructure_b20af8a5 --> IntegrationEventLogEF
+    Ordering_Infrastructure_b20af8a5 --> Ordering_Domain_e33b2e53
+    Ordering_UnitTests_44d43508 --> Ordering_API_5d46e9ea
+    Ordering_UnitTests_44d43508 --> Ordering_Domain_e33b2e53
+    Ordering_UnitTests_44d43508 --> Ordering_Infrastructure_b20af8a5
+    PaymentProcessor --> EventBusRabbitMQ
+    PaymentProcessor --> eShop_ServiceDefaults_ae22c916
+    WebApp --> EventBusRabbitMQ
+    WebApp --> WebAppComponents
+    WebApp --> eShop_ServiceDefaults_ae22c916
+    WebhookClient --> eShop_ServiceDefaults_ae22c916
+    Webhooks_API_d533aa81 --> EventBusRabbitMQ
+    Webhooks_API_d533aa81 --> IntegrationEventLogEF
+    Webhooks_API_d533aa81 --> eShop_ServiceDefaults_ae22c916
+    eShop_AppHost_UnitTests_ff9b188c --> eShop_AppHost_3b1d3b4b
+  end
+  subgraph external
+    Asp_Versioning_Http_9dc880c9["Asp.Versioning.Http"]
+    Asp_Versioning_Http_Client_14f2681e["Asp.Versioning.Http.Client"]
+    Asp_Versioning_Mvc_ApiExplorer_aab773c7["Asp.Versioning.Mvc.ApiExplorer"]
+    Asp_Versioning_OpenApi_a648160a["Asp.Versioning.OpenApi"]
+    Aspire_Azure_AI_OpenAI_50436605["Aspire.Azure.AI.OpenAI"]
+    Aspire_Hosting_Azure_AppContainers_7a315a0a["Aspire.Hosting.Azure.AppContainers"]
+    Aspire_Hosting_Dotnet_72d08c51["Aspire.Hosting.Dotnet"]
+    Aspire_Hosting_Foundry_3e073886["Aspire.Hosting.Foundry"]
+    Aspire_Hosting_PostgreSQL_68edf915["Aspire.Hosting.PostgreSQL"]
+    Aspire_Hosting_RabbitMQ_da2bcb24["Aspire.Hosting.RabbitMQ"]
+    Aspire_Hosting_Redis_972228d4["Aspire.Hosting.Redis"]
+    Aspire_Hosting_Yarp_c877e9bf["Aspire.Hosting.Yarp"]
+    Aspire_Npgsql_8e673634["Aspire.Npgsql"]
+    Aspire_Npgsql_EntityFrameworkCore_PostgreSQL_8a76c629["Aspire.Npgsql.EntityFrameworkCore.PostgreSQL"]
+    Aspire_RabbitMQ_Client_6943c546["Aspire.RabbitMQ.Client"]
+    Aspire_StackExchange_Redis_8d8f9fe9["Aspire.StackExchange.Redis"]
+    CommunityToolkit_Aspire_Hosting_Ollama_8be9a480["CommunityToolkit.Aspire.Hosting.Ollama"]
+    CommunityToolkit_Aspire_OllamaSharp_e677a39f["CommunityToolkit.Aspire.OllamaSharp"]
+    CommunityToolkit_Maui_810331a0["CommunityToolkit.Maui"]
+    CommunityToolkit_Mvvm_31af98a0["CommunityToolkit.Mvvm"]
+    Duende_IdentityServer_6e2f9ce2["Duende.IdentityServer"]
+    Duende_IdentityServer_AspNetIdentity_b44c1bca["Duende.IdentityServer.AspNetIdentity"]
+    Duende_IdentityServer_EntityFramework_dd0924f1["Duende.IdentityServer.EntityFramework"]
+    Duende_IdentityServer_Storage_fda0c056["Duende.IdentityServer.Storage"]
+    FluentValidation
+    FluentValidation_DependencyInjectionExtensions_4ae08635["FluentValidation.DependencyInjectionExtensions"]
+    Google_Protobuf_6f4c5aee["Google.Protobuf"]
+    Grpc_AspNetCore_17e30d82["Grpc.AspNetCore"]
+    Grpc_Net_Client_a49f2673["Grpc.Net.Client"]
+    Grpc_Net_ClientFactory_9b4d25ba["Grpc.Net.ClientFactory"]
+    Grpc_Tools_d24297e6["Grpc.Tools"]
+    IdentityModel
+    IdentityModel_OidcClient_bf45b026["IdentityModel.OidcClient"]
+    MediatR
+    Microsoft_AspNetCore_Authentication_JwtBearer_70a8a2bd["Microsoft.AspNetCore.Authentication.JwtBearer"]
+    Microsoft_AspNetCore_Authentication_OpenIdConnect_47c33c7d["Microsoft.AspNetCore.Authentication.OpenIdConnect"]
+    Microsoft_AspNetCore_Components_QuickGrid_65357509["Microsoft.AspNetCore.Components.QuickGrid"]
+    Microsoft_AspNetCore_Components_Web_37738687["Microsoft.AspNetCore.Components.Web"]
+    Microsoft_AspNetCore_Components_WebView_Maui_7f3dfeb4["Microsoft.AspNetCore.Components.WebView.Maui"]
+    Microsoft_AspNetCore_Identity_EntityFrameworkCore_6e9fa20b["Microsoft.AspNetCore.Identity.EntityFrameworkCore"]
+    Microsoft_AspNetCore_Identity_UI_9666a343["Microsoft.AspNetCore.Identity.UI"]
+    Microsoft_AspNetCore_Mvc_Testing_81915b21["Microsoft.AspNetCore.Mvc.Testing"]
+    Microsoft_AspNetCore_OpenApi_39e2366c["Microsoft.AspNetCore.OpenApi"]
+    Microsoft_AspNetCore_TestHost_8dbadeda["Microsoft.AspNetCore.TestHost"]
+    Microsoft_EntityFrameworkCore_Tools_977d5b23["Microsoft.EntityFrameworkCore.Tools"]
+    Microsoft_Extensions_ApiDescription_Server_6587a112["Microsoft.Extensions.ApiDescription.Server"]
+    Microsoft_Extensions_Http_a0314f55["Microsoft.Extensions.Http"]
+    Microsoft_Extensions_Http_Resilience_def4e99f["Microsoft.Extensions.Http.Resilience"]
+    Microsoft_Extensions_Identity_Stores_49fd532f["Microsoft.Extensions.Identity.Stores"]
+    Microsoft_Extensions_Logging_Debug_05a4e083["Microsoft.Extensions.Logging.Debug"]
+    Microsoft_Extensions_Options_c29a02fd["Microsoft.Extensions.Options"]
+    Microsoft_Extensions_ServiceDiscovery_b0f71884["Microsoft.Extensions.ServiceDiscovery"]
+    Microsoft_Extensions_ServiceDiscovery_Yarp_1aecd814["Microsoft.Extensions.ServiceDiscovery.Yarp"]
+    Microsoft_Maui_Controls_79fc7224["Microsoft.Maui.Controls"]
+    Microsoft_Maui_Controls_Compatibility_4ba9f5b4["Microsoft.Maui.Controls.Compatibility"]
+    Microsoft_Maui_Controls_Maps_ce6d7652["Microsoft.Maui.Controls.Maps"]
+    Microsoft_OpenApi_00d3f3ef["Microsoft.OpenApi"]
+    Microsoft_Web_LibraryManager_Build_438f38f7["Microsoft.Web.LibraryManager.Build"]
+    NSubstitute
+    NSubstitute_Analyzers_CSharp_5a896bc3["NSubstitute.Analyzers.CSharp"]
+    Npgsql_EntityFrameworkCore_PostgreSQL_4ea8db04["Npgsql.EntityFrameworkCore.PostgreSQL"]
+    OpenTelemetry_Exporter_OpenTelemetryProtocol_3fb81b74["OpenTelemetry.Exporter.OpenTelemetryProtocol"]
+    OpenTelemetry_Extensions_Hosting_f9838a24["OpenTelemetry.Extensions.Hosting"]
+    OpenTelemetry_Instrumentation_AspNetCore_75b554c6["OpenTelemetry.Instrumentation.AspNetCore"]
+    OpenTelemetry_Instrumentation_GrpcNetClient_d878a0c1["OpenTelemetry.Instrumentation.GrpcNetClient"]
+    OpenTelemetry_Instrumentation_Http_c0bad89a["OpenTelemetry.Instrumentation.Http"]
+    OpenTelemetry_Instrumentation_Runtime_cd6864cd["OpenTelemetry.Instrumentation.Runtime"]
+    Pgvector
+    Pgvector_EntityFrameworkCore_4c1d6120["Pgvector.EntityFrameworkCore"]
+    Scalar_AspNetCore_c9a21f79["Scalar.AspNetCore"]
+    System_Reflection_TypeExtensions_1636c8b3["System.Reflection.TypeExtensions"]
+    archspec
+  end
+  subgraph modules
+    Application_UnitTests_c96b6f9e["Application.UnitTests (eShop::Application::UnitTests)"]
+    Basket_API_089f6f0e["Basket.API (eShop::Basket)"]
+    Basket_UnitTests_ede9f63b["Basket.UnitTests (eShop::Basket::UnitTests)"]
+    Catalog_API_0afe428a["Catalog.API (eShop::Catalog::API::Model)"]
+    ClientApp_fd4dbee4["ClientApp (eShop::ClientApp)"]
+    ClientApp_UnitTests_6b7eefed["ClientApp.UnitTests (ClientApp::UnitTests)"]
+    EventBus_ec8dea1e["EventBus (eShop::EventBus::Abstractions)"]
+    EventBusRabbitMQ_d4a358cf["EventBusRabbitMQ (Microsoft::Extensions::Hosting)"]
+    HybridApp_6c9ed847["HybridApp (eShop::HybridApp)"]
+    Identity_API_c646a9ae["Identity.API (eShop::Identity::API::Configuration)"]
+    IntegrationEventLogEF_819f3590["IntegrationEventLogEF (eShop::IntegrationEventLogEF)"]
+    OrderProcessor_acac0213["OrderProcessor (eShop::OrderProcessor)"]
+    Ordering_API_ad554285["Ordering.API (eShop::Ordering::API)"]
+    Ordering_Domain_c8873fa7["Ordering.Domain (eShop::Ordering::Domain::AggregatesModel::BuyerAggregate)"]
+    Ordering_Infrastructure_bd7ff2ff["Ordering.Infrastructure (eShop::Ordering::Infrastructure)"]
+    Ordering_UnitTests_0c341340["Ordering.UnitTests (eShop::Ordering::UnitTests::Application)"]
+    PaymentProcessor_e358e2bd["PaymentProcessor (eShop::PaymentProcessor)"]
+    WebApp_b9b261a3["WebApp (eShop::WebApp)"]
+    WebAppComponents_e5de8139["WebAppComponents (eShop::WebAppComponents::Catalog)"]
+    WebhookClient_1b2040b0["WebhookClient (eShop::WebhookClient::Endpoints)"]
+    Webhooks_API_bba52ab7["Webhooks.API (Webhooks::API::Model)"]
+    eShop_AppHost_83dee500["eShop.AppHost (eShop::AppHost)"]
+    eShop_AppHost_UnitTests_fccc7a87["eShop.AppHost.UnitTests (eShop::AppHost::UnitTests)"]
+    eShop_ServiceDefaults_5052d1fa["eShop.ServiceDefaults (Microsoft::Extensions::Configuration)"]
+    wiring__microsoft_f2ab3da9["wiring::microsoft (Microsoft::Extensions::DependencyInjection)"]
+    wiring__root_ef21874c["wiring::root (eShop)"]
+    Application_UnitTests_c96b6f9e --> Catalog_API_0afe428a
+    Application_UnitTests_c96b6f9e --> EventBus_ec8dea1e
+    Application_UnitTests_c96b6f9e --> Identity_API_c646a9ae
+    Application_UnitTests_c96b6f9e --> OrderProcessor_acac0213
+    Application_UnitTests_c96b6f9e --> PaymentProcessor_e358e2bd
+    Application_UnitTests_c96b6f9e --> WebhookClient_1b2040b0
+    Application_UnitTests_c96b6f9e --> Webhooks_API_bba52ab7
+    Application_UnitTests_c96b6f9e --> eShop_ServiceDefaults_5052d1fa
+    Application_UnitTests_c96b6f9e --> wiring__microsoft_f2ab3da9
+    Basket_API_089f6f0e --> EventBus_ec8dea1e
+    Basket_API_089f6f0e --> eShop_ServiceDefaults_5052d1fa
+    Basket_UnitTests_ede9f63b --> Basket_API_089f6f0e
+    Catalog_API_0afe428a --> EventBus_ec8dea1e
+    Catalog_API_0afe428a --> IntegrationEventLogEF_819f3590
+    Catalog_API_0afe428a --> eShop_ServiceDefaults_5052d1fa
+    ClientApp_UnitTests_6b7eefed --> ClientApp_fd4dbee4
+    EventBusRabbitMQ_d4a358cf --> EventBus_ec8dea1e
+    EventBusRabbitMQ_d4a358cf --> wiring__microsoft_f2ab3da9
+    HybridApp_6c9ed847 --> WebAppComponents_e5de8139
+    Identity_API_c646a9ae --> eShop_ServiceDefaults_5052d1fa
+    IntegrationEventLogEF_819f3590 --> EventBus_ec8dea1e
+    OrderProcessor_acac0213 --> EventBus_ec8dea1e
+    Ordering_API_ad554285 --> EventBus_ec8dea1e
+    Ordering_API_ad554285 --> IntegrationEventLogEF_819f3590
+    Ordering_API_ad554285 --> Ordering_Domain_c8873fa7
+    Ordering_API_ad554285 --> Ordering_Infrastructure_bd7ff2ff
+    Ordering_API_ad554285 --> eShop_ServiceDefaults_5052d1fa
+    Ordering_Domain_c8873fa7 --> Ordering_API_ad554285
+    Ordering_Domain_c8873fa7 --> Ordering_Infrastructure_bd7ff2ff
+    Ordering_Infrastructure_bd7ff2ff --> IntegrationEventLogEF_819f3590
+    Ordering_Infrastructure_bd7ff2ff --> Ordering_Domain_c8873fa7
+    Ordering_UnitTests_0c341340 --> Ordering_API_ad554285
+    Ordering_UnitTests_0c341340 --> Ordering_Domain_c8873fa7
+    WebApp_b9b261a3 --> EventBus_ec8dea1e
+    WebApp_b9b261a3 --> WebAppComponents_e5de8139
+    WebApp_b9b261a3 --> eShop_ServiceDefaults_5052d1fa
+    WebhookClient_1b2040b0 --> eShop_ServiceDefaults_5052d1fa
+    Webhooks_API_bba52ab7 --> EventBus_ec8dea1e
+    Webhooks_API_bba52ab7 --> eShop_ServiceDefaults_5052d1fa
+    eShop_AppHost_UnitTests_fccc7a87 --> eShop_AppHost_83dee500
+    wiring__microsoft_f2ab3da9 --> EventBus_ec8dea1e
+    wiring__root_ef21874c --> EventBus_ec8dea1e
+    wiring__root_ef21874c --> OrderProcessor_acac0213
+    wiring__root_ef21874c --> PaymentProcessor_e358e2bd
+    wiring__root_ef21874c --> eShop_ServiceDefaults_5052d1fa
+    wiring__root_ef21874c --> wiring__microsoft_f2ab3da9
+  end
