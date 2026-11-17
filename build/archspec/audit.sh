@@ -38,12 +38,16 @@ resolve_dotnet() {
   echo "error: no dotnet SDK satisfying global.json (try installing the pinned SDK or set DOTNET=...)" >&2
   exit 1
 }
-resolve_dotnet
-"$DOTNET_BIN" restore tools/archspec/ArchspecTools.csproj -v:q --nologo >/dev/null || {
-  echo "error: restore of tools/archspec/ArchspecTools.csproj failed" >&2; exit 1; }
-ARCHSPEC=$("$DOTNET_BIN" msbuild tools/archspec/ArchspecTools.csproj \
-  -t:_ResolveArchspecPath -getProperty:ArchspecPath -nologo -v:q | tail -n1)
-[ -x "$ARCHSPEC" ] || chmod +x "$ARCHSPEC" 2>/dev/null
+# Resolver arms: (1) ARCHSPEC=<path> pins a binary directly (integration runs);
+# (2) otherwise restore the tools project and take $(ArchspecPath) from the props.
+if [ -z "${ARCHSPEC:-}" ]; then
+  resolve_dotnet
+  "$DOTNET_BIN" restore tools/archspec/ArchspecTools.csproj -v:q --nologo >/dev/null || {
+    echo "error: restore of tools/archspec/ArchspecTools.csproj failed" >&2; exit 1; }
+  ARCHSPEC=$("$DOTNET_BIN" msbuild tools/archspec/ArchspecTools.csproj \
+    -t:_ResolveArchspecPath -getProperty:ArchspecPath -nologo -v:q | tail -n1)
+  [ -x "$ARCHSPEC" ] || chmod +x "$ARCHSPEC" 2>/dev/null
+fi
 VERSION=$("$ARCHSPEC" --version 2>/dev/null || echo unknown)
 
 mkdir -p docs/archspec
