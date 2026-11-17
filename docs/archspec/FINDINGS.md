@@ -11,17 +11,23 @@ get fixed" as "what does the architecture say". Spec:
 
 `verify --strict` is **green with zero findings**: 22 boundaries (project +
 namespace tier), **0 cycles, 0 exempt entries**, territory complete, inversion
-ledger clean, and all nine test projects uniformly test-gated.
+ledger clean, and all nine test projects uniformly test-gated. The
+cross-service event layer is declared via `[[async_depends]]`: **18 edges over
+9 service pairs** (13 contracts), reported advisory-only — one legit async ring
+(Ordering↔Catalog), zero false positives.
 
 ## Issue scoreboard (what the redo re-tested)
 
-| issue | subject | status on 0.6.81 |
+| issue | subject | status |
 | --- | --- | --- |
-| #37 | props `<Error>` breaks MSBuild 18 | **fixed** — props imports; follow-up archspec#42 filed (RID resolved at evaluation time → guard still errors for plain consumers) |
-| #38 | verbs ignore the language pin with a foreign root marker | **fixed** — every verb now runs at the repo root with the pin; follow-up archspec#43 (specless `update` seeds the minority language; reseed drops `excluded_sources`) |
-| #39 | MSTest.Sdk projects counted as production; xunit ones vanished | **fixed** — `scan` prints `test-gated unit: … — MSTest.Sdk / xunit.v3.mtp-v2`, census `test-gated units: 9` |
-| #40 | `--write-exemptions` erases ledger `reason` | **not re-testable** — the tree now has zero live cycles, so the re-seed path never runs; the stale-entry detection itself works (it named our retired ledger entry correctly) |
-| #41 | repro kit for #37/#38 | informational — both kits re-ran during this audit and drove the verdicts above |
+| #37 | props `<Error>` breaks MSBuild 18 | **fixed** (0.6.81); follow-up #42 fixed |
+| #38 | language-pin ignored by some verbs | **fixed** (0.6.81); follow-up #43 fixed |
+| #39 | MSTest/xunit test-gating asymmetry | **fixed** — uniform `test-gated units: 9` |
+| #40 | write-exemptions erases ledger reason | dormant — no cycles to seed |
+| #41 | repro kits | consumed as regression harness |
+| #42 | RID at evaluation time | **open** — verified on the published 0.6.93 NuGet package: props guard still errors with empty RID for plain SDK consumers; the seed in `tools/Directory.Build.props` stays |
+| #43 | update misseed / drops excluded_sources | **fixed (0.6.93)** — verified on this tree: specless polyglot roots get a loud mismatch refusal naming the pin remedy (no silent minority seed), and reseeds preserve `[project] excluded_sources` |
+| #44 | cross-service event deps invisible | **fixed** — shipped as `[[async_depends]]` (0.6.86–0.6.91), declared in this spec |
 
 ## Findings
 
@@ -54,12 +60,36 @@ neither satisfies the floor nor engages the ceiling.
 ### F4 — Tooling notes
 
 - `tools/Directory.Build.props` seeds `_ArchspecRid` for the package-props
-  evaluation-time gap (archspec#42); remove it when that lands.
-- `archspec update` keeps `language` but drops `excluded_sources` on reseed
-  (archspec#43) — re-add after any reseed; the audit script always measures
-  `update` with the reconciled spec restored around it.
+  evaluation-time gap (archspec#42, still open on the published 0.6.93);
+  remove it when the package resolves the RID at target time.
+- `archspec update --force` preserves `[project]` keys (language,
+  excluded_sources) since 0.6.93 (archspec#43 fixed), but still reseeds all
+  model-derived content — the audit script therefore keeps measuring `update`
+  with the reconciled spec saved and restored around it, since a reseed drops
+  reconciled claims, constraints and `[[async_depends]]` by design.
 - 20 TypeScript/JavaScript files remain declared out of scope via
   `excluded_sources`.
+
+### F5 — The cross-service event layer is now declared, not inferred
+
+The 13 integration-event contracts duplicate per consumer (the distributed-
+contract idiom), so no compile-time edge connects publisher to subscriber —
+the original audit could only call this a blind spot. With `[[async_depends]]`
+(archspec#44 fixed) the contract graph is a declared, validated fact: 18 edges
+over 9 service pairs, publish/subscribe sites derived from source (reflection-
+registered `IIntegrationEventHandler<T>` included), payload shapes compared
+across per-unit copies. Census: `Ordering.API` fan-in 5 / fan-out 12 — the
+"0 dependents" reading of the direct graph is finally quotable with its async
+half. The Ordering↔Catalog round-trip appears as an advisory async ring, not
+a cycle violation: `no_cycles` adjudicates the direct graph only, which stays
+acyclic. Drift census on the declared set prints nothing — no field binds a
+field the publisher lacks, and the enum→string `OrderStatus` projections do
+not warn because the WebApp handlers never stringify the event field itself
+(the projection class is bind-site based; a probe using the field makes
+exactly one row appear). Wire-safety of those projections rests on the
+`[JsonConverter(JsonStringEnumConverter)]` attribute on `OrderStatus` — the
+one contract fact no static check covers; deleting that attribute would flip
+the wire format to integers silently.
 
 ## Non-findings (checked, nothing found)
 

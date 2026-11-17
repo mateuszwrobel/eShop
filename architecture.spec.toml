@@ -121,3 +121,102 @@ allowed = { depend_on = ["EventBus", "OrderProcessor", "PaymentProcessor", "eSho
 
 [[constraint]]
 type = "no_cycles"
+
+# Cross-service asynchronous contracts (archspec 0.6.86). Event identity only:
+# payload shape is derived from source on both sides; publish/subscribe facts
+# are validated against the model. Publisher-side FQN is the canonical name.
+# Derived from code: IIntegrationEventHandler<T> sites (subscribers) and
+# Publish/AddAndSaveEventAsync sites (publishers), 18 edges over 9 pairs.
+# The Ordering<->Catalog round-trip (OrderStatusChangedToPaid out,
+# OrderStockConfirmed back) is the async ring: reported in the async view,
+# never adjudicated by no_cycles (direct graph only).
+
+[[async_depends]] # basket checkout cleanup after order creation
+from = "Ordering.API"
+to = "Basket.API"
+event = "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStartedIntegrationEvent"
+
+[[async_depends]]
+from = "Ordering.API"
+to = "Catalog.API"
+event = "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToAwaitingValidationIntegrationEvent"
+
+[[async_depends]]
+from = "Ordering.API"
+to = "Catalog.API"
+event = "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToPaidIntegrationEvent"
+
+[[async_depends]]
+from = "Catalog.API"
+to = "Ordering.API"
+event = "eShop.Catalog.API.IntegrationEvents.Events.OrderStockConfirmedIntegrationEvent"
+
+[[async_depends]] # the other half of the Ordering<->Catalog ring
+from = "Catalog.API"
+to = "Ordering.API"
+event = "eShop.Catalog.API.IntegrationEvents.Events.OrderStockRejectedIntegrationEvent"
+
+[[async_depends]]
+from = "Catalog.API"
+to = "Webhooks.API"
+event = "eShop.Catalog.API.IntegrationEvents.Events.ProductPriceChangedIntegrationEvent"
+
+[[async_depends]]
+from = "Ordering.API"
+to = "PaymentProcessor"
+event = "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToStockConfirmedIntegrationEvent"
+
+[[async_depends]]
+from = "PaymentProcessor"
+to = "Ordering.API"
+event = "eShop.PaymentProcessor.IntegrationEvents.Events.OrderPaymentSucceededIntegrationEvent"
+
+[[async_depends]]
+from = "PaymentProcessor"
+to = "Ordering.API"
+event = "eShop.PaymentProcessor.IntegrationEvents.Events.OrderPaymentFailedIntegrationEvent"
+
+[[async_depends]]
+from = "OrderProcessor"
+to = "Ordering.API"
+event = "eShop.OrderProcessor.Events.GracePeriodConfirmedIntegrationEvent"
+
+[[async_depends]] # order-status projections into the WebApp UI
+from = "Ordering.API"
+to = "WebApp"
+event = "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToAwaitingValidationIntegrationEvent"
+
+[[async_depends]]
+from = "Ordering.API"
+to = "WebApp"
+event = "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToSubmittedIntegrationEvent"
+
+[[async_depends]]
+from = "Ordering.API"
+to = "WebApp"
+event = "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToStockConfirmedIntegrationEvent"
+
+[[async_depends]]
+from = "Ordering.API"
+to = "WebApp"
+event = "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToPaidIntegrationEvent"
+
+[[async_depends]]
+from = "Ordering.API"
+to = "WebApp"
+event = "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToShippedIntegrationEvent"
+
+[[async_depends]]
+from = "Ordering.API"
+to = "WebApp"
+event = "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToCancelledIntegrationEvent"
+
+[[async_depends]] # webhook fan-out
+from = "Ordering.API"
+to = "Webhooks.API"
+event = "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToPaidIntegrationEvent"
+
+[[async_depends]]
+from = "Ordering.API"
+to = "Webhooks.API"
+event = "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToShippedIntegrationEvent"

@@ -39,14 +39,21 @@ resolve_dotnet() {
   exit 1
 }
 # Resolver arms: (1) ARCHSPEC=<path> pins a binary directly (integration runs);
-# (2) otherwise restore the tools project and take $(ArchspecPath) from the props.
+# (2) stable-path binary when present (local dev stays ahead of the published
+# floor during release windows); (3) otherwise restore the tools project and
+# take $(ArchspecPath) from the props. CI runners have no stable-path binary,
+# so CI always exercises arm 3 — the NuGet-pinned version.
 if [ -z "${ARCHSPEC:-}" ]; then
-  resolve_dotnet
-  "$DOTNET_BIN" restore tools/archspec/ArchspecTools.csproj -v:q --nologo >/dev/null || {
-    echo "error: restore of tools/archspec/ArchspecTools.csproj failed" >&2; exit 1; }
-  ARCHSPEC=$("$DOTNET_BIN" msbuild tools/archspec/ArchspecTools.csproj \
-    -t:_ResolveArchspecPath -getProperty:ArchspecPath -nologo -v:q | tail -n1)
-  [ -x "$ARCHSPEC" ] || chmod +x "$ARCHSPEC" 2>/dev/null
+  if [ -x "$HOME/.local/bin/archspec" ]; then
+    ARCHSPEC="$HOME/.local/bin/archspec"
+  else
+    resolve_dotnet
+    "$DOTNET_BIN" restore tools/archspec/ArchspecTools.csproj -v:q --nologo >/dev/null || {
+      echo "error: restore of tools/archspec/ArchspecTools.csproj failed" >&2; exit 1; }
+    ARCHSPEC=$("$DOTNET_BIN" msbuild tools/archspec/ArchspecTools.csproj \
+      -t:_ResolveArchspecPath -getProperty:ArchspecPath -nologo -v:q | tail -n1)
+    [ -x "$ARCHSPEC" ] || chmod +x "$ARCHSPEC" 2>/dev/null
+  fi
 fi
 VERSION=$("$ARCHSPEC" --version 2>/dev/null || echo unknown)
 
@@ -86,8 +93,9 @@ timed() {
 }
 
 # timed_update — `update` is destructive to the spec: time it with save/restore.
-# The seed it writes lacks the [project] excluded_sources block (update keeps
-# `language` but drops that key), so it must never be left in place.
+# Since 0.6.93 reseed preserves [project] keys (language, excluded_sources) but
+# still regenerates all model-derived content — reconciled claims, constraints
+# and [[async_depends]] do not survive a seed — so it must never be left in place.
 timed_update() {
   local tmp; tmp=$(mktemp)
   cp architecture.spec.toml "$tmp"
@@ -184,7 +192,7 @@ TOTAL=$(printf '%s\n' "${ROWS[@]}" | awk -F'|' '{gsub(/ /,"",$6); s+=$6} END{pri
   echo
   echo "Notes: all verbs run at the repo root ($VERSION honours the spec's"
   echo "language pin everywhere); \`update\` runs with the reconciled spec saved"
-  echo "and restored around each run (its seed drops excluded_sources); times are warm page-cache runs."
+  echo "and restored around each run (a reseed regenerates all model-derived content); times are warm page-cache runs."
 } > docs/archspec/performance.md
 json_body=""
 for ((i=0;i<${#JSON[@]};i++)); do
