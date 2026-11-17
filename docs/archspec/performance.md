@@ -2,35 +2,35 @@
 
 | field | value |
 | --- | --- |
-| generated | 2026-11-17T18:46:55Z |
-| archspec | archspec 0.6.93 |
-| git | 155d67a |
+| generated | 2026-11-17T19:52:18Z |
+| archspec | archspec 0.6.94 |
+| git | 4b63376 |
 | host | Linux 6.18.49-1-MANJARO / matman |
 | runs | 3 measured + 1 warm-up per command |
 | mode | audit |
 
 | command | exit | runs (ms) | min | median | max | mean |
 | --- | --- | --- | --- | --- | --- | --- |
-| `doctor` | 0 | 73 76 69 | 69 | 73 | 76 | 73 |
-| `scan` | 0 | 409 418 404 | 404 | 409 | 418 | 410 |
-| `scan --check` | 0 | 407 422 417 | 407 | 417 | 422 | 415 |
-| `inspect` | 0 | 230 229 228 | 228 | 229 | 230 | 229 |
-| `depgraph modules` | 0 | 412 410 426 | 410 | 412 | 426 | 416 |
-| `depgraph ledger` | 0 | 417 415 404 | 404 | 415 | 417 | 412 |
-| `depgraph api-usage` | 0 | 420 436 415 | 415 | 420 | 436 | 424 |
-| `diagram` | 0 | 15 2 6 | 2 | 6 | 15 | 8 |
-| `diagram --source scan` | 0 | 3 5 4 | 3 | 4 | 5 | 4 |
-| `explain Ordering.API Ordering.Domain` | 0 | 423 419 414 | 414 | 419 | 423 | 419 |
-| `update --force` (spec restored) | 0 | 411 413 416 | 411 | 413 | 416 | 413 |
-| `verify` | 0 | 407 409 409 | 407 | 409 | 409 | 408 |
-| `verify --strict` | 0 | 406 413 409 | 406 | 409 | 413 | 409 |
-| `report` | 0 | 404 403 405 | 403 | 404 | 405 | 404 |
-| `report --format json` | 0 | 411 416 412 | 411 | 412 | 416 | 413 |
-| `spec --schema` | 0 | 2 2 2 | 2 | 2 | 2 | 2 |
-| `help` | 0 | 1 1 1 | 1 | 1 | 1 | 1 |
+| `doctor` | 0 | 67 66 64 | 64 | 66 | 67 | 66 |
+| `scan` | 0 | 452 469 507 | 452 | 469 | 507 | 476 |
+| `scan --check` | 0 | 457 454 443 | 443 | 454 | 457 | 451 |
+| `inspect` | 0 | 257 294 374 | 257 | 294 | 374 | 308 |
+| `depgraph modules` | 0 | 458 463 446 | 446 | 458 | 463 | 456 |
+| `depgraph ledger` | 0 | 443 442 441 | 441 | 442 | 443 | 442 |
+| `depgraph api-usage` | 0 | 442 443 430 | 430 | 442 | 443 | 438 |
+| `diagram` | 0 | 29 2 5 | 2 | 5 | 29 | 12 |
+| `diagram --source scan` | 0 | 3 4 3 | 3 | 3 | 4 | 3 |
+| `explain Ordering.API Ordering.Domain` | 0 | 449 451 449 | 449 | 449 | 451 | 450 |
+| `update --force` (spec restored) | 0 | 485 442 429 | 429 | 442 | 485 | 452 |
+| `verify` | 0 | 432 425 426 | 425 | 426 | 432 | 428 |
+| `verify --strict` | 0 | 463 500 454 | 454 | 463 | 500 | 472 |
+| `report` | 0 | 449 441 450 | 441 | 449 | 450 | 447 |
+| `report --format json` | 0 | 435 469 414 | 414 | 435 | 469 | 439 |
+| `spec --schema` | 0 | 7 1 1 | 1 | 1 | 7 | 3 |
+| `help` | 0 | 1 3 1 | 1 | 1 | 3 | 2 |
 
-Total of medians: 4854 ms across 17 commands.
+Total of medians: 5299 ms across 17 commands.
 
-Notes: all verbs run at the repo root (archspec 0.6.93 honours the spec's
+Notes: all verbs run at the repo root (archspec 0.6.94 honours the spec's
 language pin everywhere); `update` runs with the reconciled spec saved
 and restored around each run (a reseed regenerates all model-derived content); times are warm page-cache runs.

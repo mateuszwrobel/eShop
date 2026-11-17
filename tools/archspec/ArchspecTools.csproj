@@ -3,10 +3,10 @@
   <!--
     Tools-only project: exists so the archspec native CLI is restored from NuGet
     and its path is exposed through the $(ArchspecPath) MSBuild property.
-    Nothing is compiled. The package's build/archspec.props imports cleanly on
-    MSBuild 18 (archspec 0.6.81+) but resolves the RID at evaluation time before
-    the SDK defines NETCoreSdkRuntimeIdentifier, so tools/Directory.Build.props
-    seeds _ArchspecRid (see the comment there; tracks archspec#42).
+    Nothing is compiled. The package's build/archspec.props selects the RID at
+    target-execution time (archspec 0.6.94+, archspec#42 fixed), so no
+    consumer-side seeding is needed; capturing ArchspecPath at evaluation time
+    is empty by design — always resolve through a target (see below).
     The version comes from Central Package Management (Directory.Packages.props),
     so it is not duplicated here.
 

@@ -20,12 +20,12 @@ cross-service event layer is declared via `[[async_depends]]`: **18 edges over
 
 | issue | subject | status |
 | --- | --- | --- |
-| #37 | props `<Error>` breaks MSBuild 18 | **fixed** (0.6.81); follow-up #42 fixed |
+| #37 | props `<Error>` breaks MSBuild 18 | **fixed** (0.6.81); follow-up #42 fixed (0.6.94) |
 | #38 | language-pin ignored by some verbs | **fixed** (0.6.81); follow-up #43 fixed |
 | #39 | MSTest/xunit test-gating asymmetry | **fixed** — uniform `test-gated units: 9` |
 | #40 | write-exemptions erases ledger reason | dormant — no cycles to seed |
 | #41 | repro kits | consumed as regression harness |
-| #42 | RID at evaluation time | **open** — verified on the published 0.6.93 NuGet package: props guard still errors with empty RID for plain SDK consumers; the seed in `tools/Directory.Build.props` stays |
+| #42 | RID at evaluation time | **fixed (0.6.94)** — verified on this tree: consumer seed deleted, the tools project resolves `ArchspecPath` cleanly through the pure package path (official SDK, target-time `linux-x64`), and a synthetic consumer on the Arch system SDK (execution-time RID `arch-x64`) resolves through the fold row to the `linux-x64` binary with no seed and no error |
 | #43 | update misseed / drops excluded_sources | **fixed (0.6.93)** — verified on this tree: specless polyglot roots get a loud mismatch refusal naming the pin remedy (no silent minority seed), and reseeds preserve `[project] excluded_sources` |
 | #44 | cross-service event deps invisible | **fixed** — shipped as `[[async_depends]]` (0.6.86–0.6.91), declared in this spec |
 
@@ -59,9 +59,9 @@ neither satisfies the floor nor engages the ceiling.
 
 ### F4 — Tooling notes
 
-- `tools/Directory.Build.props` seeds `_ArchspecRid` for the package-props
-  evaluation-time gap (archspec#42, still open on the published 0.6.93);
-  remove it when the package resolves the RID at target time.
+- No consumer-side RID seeding is needed since 0.6.94: the package selects
+  the binary at target-execution time (the `tools/Directory.Build.props`
+  seed that the evaluation-time gap required was retired with the fix).
 - `archspec update --force` preserves `[project]` keys (language,
   excluded_sources) since 0.6.93 (archspec#43 fixed), but still reseeds all
   model-derived content — the audit script therefore keeps measuring `update`
