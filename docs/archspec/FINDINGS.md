@@ -75,10 +75,13 @@ neither satisfies the floor nor engages the ceiling.
 The 13 integration-event contracts duplicate per consumer (the distributed-
 contract idiom), so no compile-time edge connects publisher to subscriber —
 the original audit could only call this a blind spot. With `[[async_depends]]`
-(archspec#44 fixed) the contract graph is a declared, validated fact: 18 edges
-over 9 service pairs, publish/subscribe sites derived from source (reflection-
-registered `IIntegrationEventHandler<T>` included), payload shapes compared
-across per-unit copies. Census: `Ordering.API` fan-in 5 / fan-out 12 — the
+(archspec#44 fixed) the contract graph is a declared fact: 18 edges over 9
+service pairs — endpoint legs identity declaration-trusted, while payload
+shape, bind-site liveness and async rings are derived from source (a
+mutation matrix of 8 arms confirmed the endpoint legs themselves are
+declaration-trusted, not adjudicated; the shipped spec wording is exact
+here, prose elsewhere overclaimed). Census: `Ordering.API` fan-in 5 /
+fan-out 12 — the
 "0 dependents" reading of the direct graph is finally quotable with its async
 half. The Ordering↔Catalog round-trip appears as an advisory async ring, not
 a cycle violation: `no_cycles` adjudicates the direct graph only, which stays
