@@ -1,0 +1,80 @@
+graph TD
+  API["API [composition]"]
+  AppHost
+  Basket["Basket [composition]"]
+  Catalog
+  ClientApp["ClientApp [composition]"]
+  EventBus["EventBus [facade]"]
+  EventBusRabbitMQ
+  Extensions
+  HybridApp["HybridApp [composition]"]
+  Identity
+  Infrastructure["Infrastructure [facade]"]
+  IntegrationEventLogEF
+  OrderProcessor
+  Ordering
+  PaymentProcessor
+  Quickstart
+  ServiceDefaults
+  WebApp["WebApp [composition]"]
+  WebAppComponents
+  WebhookClient["WebhookClient [composition]"]
+  root
+  API --> Catalog
+  API --> EventBus
+  API --> EventBusRabbitMQ
+  API --> Extensions
+  API --> Identity
+  API --> IntegrationEventLogEF
+  API --> ServiceDefaults
+  Basket --> EventBus
+  Basket --> EventBusRabbitMQ
+  Basket --> Extensions
+  Basket --> ServiceDefaults
+  Catalog --> EventBusRabbitMQ
+  Catalog --> Extensions
+  Catalog --> IntegrationEventLogEF
+  Catalog --> ServiceDefaults
+  EventBusRabbitMQ --> EventBus
+  EventBusRabbitMQ --> Extensions
+  Extensions --> EventBus
+  Extensions --> EventBusRabbitMQ
+  Extensions --> IntegrationEventLogEF
+  Extensions --> ServiceDefaults
+  HybridApp --> WebAppComponents
+  Identity --> Extensions
+  Identity --> ServiceDefaults
+  Infrastructure --> IntegrationEventLogEF
+  Infrastructure --> Ordering
+  IntegrationEventLogEF --> EventBus
+  IntegrationEventLogEF --> Extensions
+  OrderProcessor --> EventBus
+  OrderProcessor --> EventBusRabbitMQ
+  OrderProcessor --> Extensions
+  OrderProcessor --> ServiceDefaults
+  Ordering --> EventBus
+  Ordering --> EventBusRabbitMQ
+  Ordering --> Extensions
+  Ordering --> Infrastructure
+  Ordering --> IntegrationEventLogEF
+  Ordering --> ServiceDefaults
+  PaymentProcessor --> EventBusRabbitMQ
+  PaymentProcessor --> Extensions
+  PaymentProcessor --> ServiceDefaults
+  Quickstart --> Extensions
+  Quickstart --> ServiceDefaults
+  ServiceDefaults --> Extensions
+  WebApp --> EventBus
+  WebApp --> EventBusRabbitMQ
+  WebApp --> Extensions
+  WebApp --> ServiceDefaults
+  WebApp --> WebAppComponents
+  WebhookClient --> Extensions
+  WebhookClient --> ServiceDefaults
+  root --> EventBus
+  root --> EventBusRabbitMQ
+  root --> Extensions
+  root --> OrderProcessor
+  root --> PaymentProcessor
+  root --> ServiceDefaults
+  %% note: 2 role facts folded onto one node with different roles, so the node states nothing — explained in 'archspec help roles'

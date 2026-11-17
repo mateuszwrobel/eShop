@@ -1,0 +1,23 @@
+{
+  "generated": "2026-11-17T10:43:15Z",
+  "archspec": "archspec 0.6.81",
+  "commands": [
+    {"command":"doctor","runs":[150,150,151],"exit":0},
+    {"command":"scan","runs":[253,265,254],"exit":0},
+    {"command":"scan --check","runs":[257,262,398],"exit":0},
+    {"command":"inspect","runs":[237,258,247],"exit":0},
+    {"command":"depgraph modules","runs":[261,283,286],"exit":0},
+    {"command":"depgraph ledger","runs":[264,287,307],"exit":0},
+    {"command":"depgraph api-usage","runs":[284,258,314],"exit":0},
+    {"command":"diagram","runs":[7,1,12],"exit":0},
+    {"command":"diagram --source scan","runs":[6,5,6],"exit":0},
+    {"command":"explain Ordering.API Ordering.Domain","runs":[449,344,328],"exit":0},
+    {"command":"update --force","runs":[302,276,280],"exit":0},
+    {"command":"verify","runs":[280,282,276],"exit":0},
+    {"command":"verify --strict","runs":[279,459,302],"exit":0},
+    {"command":"report","runs":[278,291,276],"exit":0},
+    {"command":"report --format json","runs":[281,272,279],"exit":0},
+    {"command":"spec --schema","runs":[6,5,5],"exit":0},
+    {"command":"help","runs":[4,4,4],"exit":0}
+  ]
+}
