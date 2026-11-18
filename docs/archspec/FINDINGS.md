@@ -29,6 +29,16 @@ cross-service event layer is declared via `[[async_depends]]`: **18 edges over
 | #43 | update misseed / drops excluded_sources | **fixed (0.6.93)** — verified on this tree: specless polyglot roots get a loud mismatch refusal naming the pin remedy (no silent minority seed), and reseeds preserve `[project] excluded_sources` |
 | #44 | cross-service event deps invisible | **fixed** — shipped as `[[async_depends]]` (0.6.86–0.6.91), declared in this spec |
 
+### Expansion sweep (2026-11-18) — filed from this tree
+
+| issue | subject | status |
+| --- | --- | --- |
+| #56 | exact-duplicate `[[async_depends]]` entries pass silently (render dedupes, entry census double-counts) | open — filed from this tree's probes |
+| #57 | `update --force` reseeds away every hand-written spec section except `excluded_sources` (async contracts, constraints, exemptions, policy tables) | open |
+| #58 | `[module.allowed]` header vs `allowed = { }` canonical form: help teaches one, `update` writes the other, combining them yields malformed-TOML with context-bleeding diagnostics | open |
+
+Sweep evidence permalink: the tree state at sweep time, `65849e4`. The 0.6.95 release ping diffs frozen 0.6.94 artifacts (depgraph/diagram/verify outputs) against the fix wave — expected deltas are the #46 drift rows on helper-indirection legs and the #47 `(mixed)` class removal; async endpoints in module-tier projections must become declared node ids (#51 landed as a naming fix, not a descent fix — the fold is provably idle on this tree: auto output is byte-identical to `--aggregate modules`). One candidate awaits disposition: deleting a `[[module]]` claim for a direct-only unit leaves `verify --strict` green with no census line (the unclaimed diagnostic fires for async endpoints only) — claim deletion silent while claim absence is loud.
+
 ## Findings
 
 ### F1 — The v1 cycle debt was an artifact, now retired
