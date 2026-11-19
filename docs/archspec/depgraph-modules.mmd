@@ -77,22 +77,17 @@ graph TD
   root --> OrderProcessor
   root --> PaymentProcessor
   root --> ServiceDefaults
-  Catalog_API_56d0f14a -.->|Catalog.API::OrderStockConfirmedIntegrationEvent| Ordering_API_5d46e9ea
-  Catalog_API_56d0f14a -.->|Catalog.API::OrderStockRejectedIntegrationEvent| Ordering_API_5d46e9ea
-  Catalog_API_56d0f14a -.->|Catalog.API::ProductPriceChangedIntegrationEvent| Webhooks_API_d533aa81
-  OrderProcessor -.->|OrderProcessor::GracePeriodConfirmedIntegrationEvent| Ordering_API_5d46e9ea
-  Ordering_API_5d46e9ea -.->|Ordering.API::OrderStartedIntegrationEvent| Basket_API_d3aca517
-  Ordering_API_5d46e9ea -.->|Ordering.API::OrderStatusChangedToAwaitingValidationIntegrationEvent| Catalog_API_56d0f14a
-  Ordering_API_5d46e9ea -.->|Ordering.API::OrderStatusChangedToPaidIntegrationEvent| Catalog_API_56d0f14a
-  Ordering_API_5d46e9ea -.->|Ordering.API::OrderStatusChangedToStockConfirmedIntegrationEvent| PaymentProcessor
-  Ordering_API_5d46e9ea -.->|Ordering.API::OrderStatusChangedToAwaitingValidationIntegrationEvent| WebApp
-  Ordering_API_5d46e9ea -.->|Ordering.API::OrderStatusChangedToCancelledIntegrationEvent| WebApp
-  Ordering_API_5d46e9ea -.->|Ordering.API::OrderStatusChangedToPaidIntegrationEvent| WebApp
-  Ordering_API_5d46e9ea -.->|Ordering.API::OrderStatusChangedToShippedIntegrationEvent| WebApp
-  Ordering_API_5d46e9ea -.->|Ordering.API::OrderStatusChangedToStockConfirmedIntegrationEvent| WebApp
-  Ordering_API_5d46e9ea -.->|Ordering.API::OrderStatusChangedToSubmittedIntegrationEvent| WebApp
-  Ordering_API_5d46e9ea -.->|Ordering.API::OrderStatusChangedToPaidIntegrationEvent| Webhooks_API_d533aa81
-  Ordering_API_5d46e9ea -.->|Ordering.API::OrderStatusChangedToShippedIntegrationEvent| Webhooks_API_d533aa81
-  PaymentProcessor -.->|PaymentProcessor::OrderPaymentFailedIntegrationEvent| Ordering_API_5d46e9ea
-  PaymentProcessor -.->|PaymentProcessor::OrderPaymentSucceededIntegrationEvent| Ordering_API_5d46e9ea
+  OrderProcessor -.->|OrderProcessor::GracePeriodConfirmedIntegrationEvent| Ordering
+  Ordering -.->|Ordering.API::OrderStatusChangedToPaidIntegrationEvent| API
+  Ordering -.->|Ordering.API::OrderStatusChangedToShippedIntegrationEvent| API
+  Ordering -.->|Ordering.API::OrderStartedIntegrationEvent| Basket
+  Ordering -.->|Ordering.API::OrderStatusChangedToStockConfirmedIntegrationEvent| PaymentProcessor
+  Ordering -.->|Ordering.API::OrderStatusChangedToAwaitingValidationIntegrationEvent| WebApp
+  Ordering -.->|Ordering.API::OrderStatusChangedToCancelledIntegrationEvent| WebApp
+  Ordering -.->|Ordering.API::OrderStatusChangedToPaidIntegrationEvent| WebApp
+  Ordering -.->|Ordering.API::OrderStatusChangedToShippedIntegrationEvent| WebApp
+  Ordering -.->|Ordering.API::OrderStatusChangedToStockConfirmedIntegrationEvent| WebApp
+  Ordering -.->|Ordering.API::OrderStatusChangedToSubmittedIntegrationEvent| WebApp
+  PaymentProcessor -.->|PaymentProcessor::OrderPaymentFailedIntegrationEvent| Ordering
+  PaymentProcessor -.->|PaymentProcessor::OrderPaymentSucceededIntegrationEvent| Ordering
   %% note: 2 role facts folded onto one node with different roles, so the node states nothing — explained in 'archspec help roles'
