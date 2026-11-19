@@ -1,0 +1,222 @@
+{
+  "language": "csharp",
+  "environment": {
+    "state": "built",
+    "header": "adjudicated against BUILT tree",
+    "classes": {
+      "test-gated unit": 9
+    }
+  },
+  "metrics": {
+    "components": 22,
+    "units": 20,
+    "edges_internal": 35,
+    "edges_external": 67,
+    "cycles": 0,
+    "violations_components": 0,
+    "violations_edges": 0,
+    "violations_undeclared_dependency": 0,
+    "violations_boundary_violation": 0,
+    "violations_contracts": 0,
+    "violations_cycles": 0
+  },
+  "roles": {
+    "Catalog::API": "composition",
+    "Identity::API": "composition",
+    "Ordering::Infrastructure": "facade",
+    "Webhooks::API": "composition",
+    "eShop::Basket": "composition",
+    "eShop::ClientApp": "composition",
+    "eShop::EventBus": "facade",
+    "eShop::HybridApp": "composition",
+    "eShop::Ordering": "facade",
+    "eShop::Ordering::API": "composition",
+    "eShop::WebApp": "composition",
+    "eShop::WebhookClient": "composition"
+  },
+  "findings": [
+    {
+      "category": "async cycle",
+      "severity": "warning",
+      "message": "Catalog.API -> Ordering.API -> Catalog.API (async)"
+    }
+  ],
+  "async_census": {
+    "pairs": [
+      {
+        "from": "Catalog.API",
+        "to": "Ordering.API",
+        "event": "eShop.Catalog.API.IntegrationEvents.Events.OrderStockConfirmedIntegrationEvent"
+      },
+      {
+        "from": "Catalog.API",
+        "to": "Ordering.API",
+        "event": "eShop.Catalog.API.IntegrationEvents.Events.OrderStockRejectedIntegrationEvent"
+      },
+      {
+        "from": "Catalog.API",
+        "to": "Webhooks.API",
+        "event": "eShop.Catalog.API.IntegrationEvents.Events.ProductPriceChangedIntegrationEvent"
+      },
+      {
+        "from": "OrderProcessor",
+        "to": "Ordering.API",
+        "event": "eShop.OrderProcessor.Events.GracePeriodConfirmedIntegrationEvent"
+      },
+      {
+        "from": "Ordering.API",
+        "to": "Basket.API",
+        "event": "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStartedIntegrationEvent"
+      },
+      {
+        "from": "Ordering.API",
+        "to": "Catalog.API",
+        "event": "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToAwaitingValidationIntegrationEvent"
+      },
+      {
+        "from": "Ordering.API",
+        "to": "Catalog.API",
+        "event": "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToPaidIntegrationEvent"
+      },
+      {
+        "from": "Ordering.API",
+        "to": "PaymentProcessor",
+        "event": "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToStockConfirmedIntegrationEvent"
+      },
+      {
+        "from": "Ordering.API",
+        "to": "WebApp",
+        "event": "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToAwaitingValidationIntegrationEvent"
+      },
+      {
+        "from": "Ordering.API",
+        "to": "WebApp",
+        "event": "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToCancelledIntegrationEvent"
+      },
+      {
+        "from": "Ordering.API",
+        "to": "WebApp",
+        "event": "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToPaidIntegrationEvent"
+      },
+      {
+        "from": "Ordering.API",
+        "to": "WebApp",
+        "event": "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToShippedIntegrationEvent"
+      },
+      {
+        "from": "Ordering.API",
+        "to": "WebApp",
+        "event": "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToStockConfirmedIntegrationEvent"
+      },
+      {
+        "from": "Ordering.API",
+        "to": "WebApp",
+        "event": "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToSubmittedIntegrationEvent"
+      },
+      {
+        "from": "Ordering.API",
+        "to": "Webhooks.API",
+        "event": "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToPaidIntegrationEvent"
+      },
+      {
+        "from": "Ordering.API",
+        "to": "Webhooks.API",
+        "event": "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToShippedIntegrationEvent"
+      },
+      {
+        "from": "PaymentProcessor",
+        "to": "Ordering.API",
+        "event": "eShop.PaymentProcessor.IntegrationEvents.Events.OrderPaymentFailedIntegrationEvent"
+      },
+      {
+        "from": "PaymentProcessor",
+        "to": "Ordering.API",
+        "event": "eShop.PaymentProcessor.IntegrationEvents.Events.OrderPaymentSucceededIntegrationEvent"
+      }
+    ],
+    "per_service": {
+      "Basket.API": {
+        "fan_in": 1,
+        "fan_out": 0
+      },
+      "Catalog.API": {
+        "fan_in": 2,
+        "fan_out": 3
+      },
+      "OrderProcessor": {
+        "fan_in": 0,
+        "fan_out": 1
+      },
+      "Ordering.API": {
+        "fan_in": 5,
+        "fan_out": 12
+      },
+      "PaymentProcessor": {
+        "fan_in": 1,
+        "fan_out": 2
+      },
+      "WebApp": {
+        "fan_in": 6,
+        "fan_out": 0
+      },
+      "Webhooks.API": {
+        "fan_in": 3,
+        "fan_out": 0
+      }
+    },
+    "per_event": {
+      "eShop.Catalog.API.IntegrationEvents.Events.OrderStockConfirmedIntegrationEvent": {
+        "fan_in": 1,
+        "fan_out": 1
+      },
+      "eShop.Catalog.API.IntegrationEvents.Events.OrderStockRejectedIntegrationEvent": {
+        "fan_in": 1,
+        "fan_out": 1
+      },
+      "eShop.Catalog.API.IntegrationEvents.Events.ProductPriceChangedIntegrationEvent": {
+        "fan_in": 1,
+        "fan_out": 1
+      },
+      "eShop.OrderProcessor.Events.GracePeriodConfirmedIntegrationEvent": {
+        "fan_in": 1,
+        "fan_out": 1
+      },
+      "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStartedIntegrationEvent": {
+        "fan_in": 1,
+        "fan_out": 1
+      },
+      "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToAwaitingValidationIntegrationEvent": {
+        "fan_in": 2,
+        "fan_out": 1
+      },
+      "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToCancelledIntegrationEvent": {
+        "fan_in": 1,
+        "fan_out": 1
+      },
+      "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToPaidIntegrationEvent": {
+        "fan_in": 3,
+        "fan_out": 1
+      },
+      "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToShippedIntegrationEvent": {
+        "fan_in": 2,
+        "fan_out": 1
+      },
+      "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToStockConfirmedIntegrationEvent": {
+        "fan_in": 2,
+        "fan_out": 1
+      },
+      "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToSubmittedIntegrationEvent": {
+        "fan_in": 1,
+        "fan_out": 1
+      },
+      "eShop.PaymentProcessor.IntegrationEvents.Events.OrderPaymentFailedIntegrationEvent": {
+        "fan_in": 1,
+        "fan_out": 1
+      },
+      "eShop.PaymentProcessor.IntegrationEvents.Events.OrderPaymentSucceededIntegrationEvent": {
+        "fan_in": 1,
+        "fan_out": 1
+      }
+    }
+  }
+}

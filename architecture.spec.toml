@@ -1,0 +1,222 @@
+# eShop architecture specification — archspec (https://github.com/mateuszwrobel/archspec)
+# Run the instrumented audit with ./build/archspec/audit.sh
+# Reference: archspec help spec | archspec help languages | archspec help diagnostics
+
+[project]
+language = "csharp"
+# The tree is the .NET solution; the handful of TS/JS files are test runners
+# and static assets with no place in the architecture. Declared so the
+# language-consreement check judges the tree as pure csharp.
+excluded_sources = [
+  { path = "e2e", reason = "Playwright end-to-end specs (TypeScript)" },
+  { path = "playwright.config.ts", reason = "Playwright runner config (TypeScript)" },
+  { path = "src/Identity.API/wwwroot", reason = "IdentityServer static assets (JavaScript)" },
+  { path = "src/WebApp/Components/Chatbot/Chatbot.razor.js", reason = "Blazor JS interop asset" },
+  { path = "src/WebApp/wwwroot", reason = "WebApp static assets (JavaScript)" },
+]
+
+
+[[module]]
+name = "Basket.API"
+matches = { units = ["Basket.API"], modules = ["eShop::Basket"] }
+allowed = { depend_on = ["EventBus", "EventBusRabbitMQ", "eShop.ServiceDefaults"] }
+
+[[module]]
+name = "Catalog.API"
+matches = { units = ["Catalog.API"], modules = ["Catalog::API", "eShop::Catalog"] }
+allowed = { depend_on = ["EventBus", "EventBusRabbitMQ", "IntegrationEventLogEF", "eShop.ServiceDefaults"] }
+
+[[module]]
+name = "Identity.API"
+matches = { units = ["Identity.API"], modules = ["Identity::API", "eShop::Identity", "IdentityServerHost::Quickstart"] }
+allowed = { depend_on = ["eShop.ServiceDefaults"] }
+
+[[module]]
+name = "Ordering.API"
+matches = { units = ["Ordering.API"], modules = ["eShop::Ordering::API"] }
+allowed = { depend_on = ["EventBus", "EventBusRabbitMQ", "IntegrationEventLogEF", "Ordering.Domain", "Ordering.Infrastructure", "eShop.ServiceDefaults"] }
+
+[[module]]
+name = "WebApp"
+matches = { units = ["WebApp"], modules = ["eShop::WebApp"] }
+allowed = { depend_on = ["EventBus", "EventBusRabbitMQ", "WebAppComponents", "eShop.ServiceDefaults"] }
+
+[[module]]
+name = "HybridApp"
+matches = { units = ["HybridApp"], modules = ["eShop::HybridApp"] }
+allowed = { depend_on = ["WebAppComponents"] }
+
+[[module]]
+name = "ClientApp"
+matches = { units = ["ClientApp"], modules = ["eShop::ClientApp"] }
+
+[[module]]
+name = "Webhooks.API"
+matches = { units = ["Webhooks.API"], modules = ["Webhooks::API"] }
+allowed = { depend_on = ["EventBus", "EventBusRabbitMQ", "IntegrationEventLogEF", "eShop.ServiceDefaults"] }
+
+[[module]]
+name = "WebAppComponents"
+matches = { units = ["WebAppComponents"], modules = ["eShop::WebAppComponents"] }
+
+[[module]]
+name = "WebhookClient"
+matches = { units = ["WebhookClient"], modules = ["eShop::WebhookClient"] }
+allowed = { depend_on = ["eShop.ServiceDefaults"] }
+
+[[module]]
+name = "OrderProcessor"
+matches = { units = ["OrderProcessor"], modules = ["eShop::OrderProcessor"] }
+allowed = { depend_on = ["EventBus", "EventBusRabbitMQ", "eShop.ServiceDefaults"] }
+
+[[module]]
+name = "PaymentProcessor"
+matches = { units = ["PaymentProcessor"], modules = ["eShop::PaymentProcessor"] }
+allowed = { depend_on = ["EventBusRabbitMQ", "eShop.ServiceDefaults"] }
+
+[[module]]
+name = "Ordering.Domain"
+matches = { units = ["Ordering.Domain"], modules = ["eShop::Ordering::Domain", "eShop::Ordering"] }
+
+[[module]]
+name = "Ordering.Infrastructure"
+matches = { units = ["Ordering.Infrastructure"], modules = ["Ordering::Infrastructure", "eShop::Ordering::Infrastructure"] }
+allowed = { depend_on = ["IntegrationEventLogEF", "Ordering.Domain"] }
+
+[[module]]
+name = "EventBus"
+matches = { units = ["EventBus"], modules = ["eShop::EventBus"] }
+
+[[module]]
+name = "EventBusRabbitMQ"
+matches = { units = ["EventBusRabbitMQ"], modules = ["eShop::EventBusRabbitMQ", "Microsoft::Extensions::Hosting"] }
+allowed = { depend_on = ["EventBus", "wiring::microsoft"] }
+
+[[module]]
+name = "IntegrationEventLogEF"
+matches = { units = ["IntegrationEventLogEF"], modules = ["eShop::IntegrationEventLogEF"] }
+allowed = { depend_on = ["EventBus"] }
+
+[[module]]
+name = "eShop.ServiceDefaults"
+matches = { units = ["eShop.ServiceDefaults"], modules = ["eShop::ServiceDefaults", "Microsoft::Extensions::Configuration"] }
+
+[[module]]
+name = "eShop.AppHost"
+matches = { units = ["eShop.AppHost"], modules = ["eShop::AppHost"] }
+
+[[module]]
+name = "ArchspecTools"
+matches = { units = ["ArchspecTools"] }
+
+[[module]]
+name = "wiring::microsoft"
+matches = { modules = ["Microsoft::Extensions::DependencyInjection"] }
+allowed = { depend_on = ["EventBus"] }
+
+[[module]]
+name = "wiring::root"
+matches = { modules = ["eShop"] }
+allowed = { depend_on = ["EventBus", "OrderProcessor", "PaymentProcessor", "eShop.ServiceDefaults", "wiring::microsoft"] }
+
+[[constraint]]
+type = "no_cycles"
+
+# Cross-service asynchronous contracts (archspec 0.6.86). Event identity only:
+# payload shape is derived from source on both sides; publish/subscribe facts
+# are validated against the model. Publisher-side FQN is the canonical name.
+# Derived from code: IIntegrationEventHandler<T> sites (subscribers) and
+# Publish/AddAndSaveEventAsync sites (publishers), 18 edges over 9 pairs.
+# The Ordering<->Catalog round-trip (OrderStatusChangedToPaid out,
+# OrderStockConfirmed back) is the async ring: reported in the async view,
+# never adjudicated by no_cycles (direct graph only).
+
+[[async_depends]] # basket checkout cleanup after order creation
+from = "Ordering.API"
+to = "Basket.API"
+event = "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStartedIntegrationEvent"
+
+[[async_depends]]
+from = "Ordering.API"
+to = "Catalog.API"
+event = "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToAwaitingValidationIntegrationEvent"
+
+[[async_depends]]
+from = "Ordering.API"
+to = "Catalog.API"
+event = "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToPaidIntegrationEvent"
+
+[[async_depends]]
+from = "Catalog.API"
+to = "Ordering.API"
+event = "eShop.Catalog.API.IntegrationEvents.Events.OrderStockConfirmedIntegrationEvent"
+
+[[async_depends]] # the other half of the Ordering<->Catalog ring
+from = "Catalog.API"
+to = "Ordering.API"
+event = "eShop.Catalog.API.IntegrationEvents.Events.OrderStockRejectedIntegrationEvent"
+
+[[async_depends]]
+from = "Catalog.API"
+to = "Webhooks.API"
+event = "eShop.Catalog.API.IntegrationEvents.Events.ProductPriceChangedIntegrationEvent"
+
+[[async_depends]]
+from = "Ordering.API"
+to = "PaymentProcessor"
+event = "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToStockConfirmedIntegrationEvent"
+
+[[async_depends]]
+from = "PaymentProcessor"
+to = "Ordering.API"
+event = "eShop.PaymentProcessor.IntegrationEvents.Events.OrderPaymentSucceededIntegrationEvent"
+
+[[async_depends]]
+from = "PaymentProcessor"
+to = "Ordering.API"
+event = "eShop.PaymentProcessor.IntegrationEvents.Events.OrderPaymentFailedIntegrationEvent"
+
+[[async_depends]]
+from = "OrderProcessor"
+to = "Ordering.API"
+event = "eShop.OrderProcessor.Events.GracePeriodConfirmedIntegrationEvent"
+
+[[async_depends]] # order-status projections into the WebApp UI
+from = "Ordering.API"
+to = "WebApp"
+event = "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToAwaitingValidationIntegrationEvent"
+
+[[async_depends]]
+from = "Ordering.API"
+to = "WebApp"
+event = "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToSubmittedIntegrationEvent"
+
+[[async_depends]]
+from = "Ordering.API"
+to = "WebApp"
+event = "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToStockConfirmedIntegrationEvent"
+
+[[async_depends]]
+from = "Ordering.API"
+to = "WebApp"
+event = "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToPaidIntegrationEvent"
+
+[[async_depends]]
+from = "Ordering.API"
+to = "WebApp"
+event = "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToShippedIntegrationEvent"
+
+[[async_depends]]
+from = "Ordering.API"
+to = "WebApp"
+event = "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToCancelledIntegrationEvent"
+
+[[async_depends]] # webhook fan-out
+from = "Ordering.API"
+to = "Webhooks.API"
+event = "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToPaidIntegrationEvent"
+
+[[async_depends]]
+from = "Ordering.API"
+to = "Webhooks.API"
+event = "eShop.Ordering.API.Application.IntegrationEvents.Events.OrderStatusChangedToShippedIntegrationEvent"

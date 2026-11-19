@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Tools-only project: exists so the archspec native CLI is restored from NuGet
+    and its path is exposed through the $(ArchspecPath) MSBuild property.
+    Nothing is compiled. The package's build/archspec.props selects the RID at
+    target-execution time (archspec 0.6.94+, archspec#42 fixed), so no
+    consumer-side seeding is needed; capturing ArchspecPath at evaluation time
+    is empty by design — always resolve through a target (see below).
+    The version comes from Central Package Management (Directory.Packages.props),
+    so it is not duplicated here.
+
+    Resolve the binary with:
+      dotnet msbuild tools/archspec/ArchspecTools.csproj -t:_ResolveArchspecPath -getProperty:ArchspecPath
+
+    Run the instrumented architecture audit with:
+      ./build/archspec/audit.sh
+  -->
+
+  <PropertyGroup>
+    <RepoRoot>$(MSBuildThisFileDirectory)../../</RepoRoot>
+    <TargetFramework>net10.0</TargetFramework>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <IsPackable>false</IsPackable>
+    <IsPublishable>false</IsPublishable>
+    <!-- No sources is by design for a tools-only project. -->
+    <NoWarn>$(NoWarn);CS2008</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="archspec" PrivateAssets="all" />
+  </ItemGroup>
+
+  <Target Name="_ResolveArchspecPath">
+    <Error Condition="'$(ArchspecPath)' == ''" Text="archspec: $(ArchspecPath) is empty — did the archspec package props set it? Restore tools/archspec/ArchspecTools.csproj first." />
+  </Target>
+
+  <Target Name="ArchspecVersion" DependsOnTargets="_ResolveArchspecPath">
+    <Exec Command="&quot;$(ArchspecPath)&quot; --version" />
+  </Target>
+
+  <!-- CI gate: archspec verify with strict severity against the repo root spec. -->
+  <Target Name="ArchspecVerify" DependsOnTargets="_ResolveArchspecPath">
+    <Exec Command="&quot;$(ArchspecPath)&quot; verify --strict" WorkingDirectory="$(RepoRoot)" />
+  </Target>
+
+</Project>

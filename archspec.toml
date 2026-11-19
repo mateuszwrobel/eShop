@@ -1,0 +1,6 @@
+# archspec output config — generated artefact destinations (paths relative to repo root).
+[output]
+inspect = "docs/archspec/inspect.mmd"
+diagram = "docs/archspec/diagram.mmd"
+report = "docs/archspec/report.md"
+scan = "docs/archspec/scan.json"

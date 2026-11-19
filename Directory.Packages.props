@@ -4,6 +4,8 @@
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <ItemGroup>
+    <!-- Tools-only native CLI for the architecture audit (tools/archspec). -->
+    <PackageVersion Include="archspec" Version="0.6.109" />
     <!-- Version together with Aspire -->
     <PackageVersion Include="Aspire.Hosting.Dotnet" Version="13.6.0-preview.1.26479.8" />
     <PackageVersion Include="Aspire.Hosting.Azure.AppContainers" Version="13.6.0" />

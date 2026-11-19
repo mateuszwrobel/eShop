@@ -1,0 +1,14 @@
+{
+  "generated": "2026-11-19T06:57:26Z",
+  "archspec": "archspec 0.6.109",
+  "commands": [
+    {"command":"scan --check","runs":[408,510,404],"exit":0},
+    {"command":"inspect --check","runs":[207,204,211],"exit":0},
+    {"command":"depgraph modules --check","runs":[428,416,467],"exit":0},
+    {"command":"depgraph ledger --check","runs":[399,396,416],"exit":0},
+    {"command":"diagram --check","runs":[1,2,1],"exit":0},
+    {"command":"report --check","runs":[412,397,417],"exit":0},
+    {"command":"verify","runs":[403,399,400],"exit":0},
+    {"command":"verify --strict","runs":[404,423,391],"exit":0}
+  ]
+}
